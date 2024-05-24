@@ -2,13 +2,18 @@ import pandas as pd
 import threading
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # Carregar a planilha de placas
 df = pd.read_excel('placas_mercosul.xlsx')
 placas = df['Placa'].tolist()
 
 
-# Função para verificar se uma placa está na lista
 def check_placa(placa, resultado):
     resultado.append(placa in placas)
 
@@ -26,7 +31,7 @@ async def verificar_placa(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await update.message.reply_text('Por favor, envie uma placa válida.')
         return
 
-    # Utilizando threads para verificar a placa
+    # verificar a placa
     num_threads = 10
     resultados = []
     threads = []
@@ -46,16 +51,15 @@ async def verificar_placa(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
 
 def main() -> None:
-    # Substitua 'YOUR_API_TOKEN' pelo token do seu bot
-    application = Application.builder().token("7199469433:AAGoA0gClRhRNOFvBH2f03i8uRUXSWW07jU").build()
 
-    # Adiciona o handler para o comando /start
+    application = Application.builder().token(BOT_TOKEN).build()
+
+    # Adicionar o handler para o comando /start
     application.add_handler(CommandHandler("start", start))
 
-    # Adiciona o handler para mensagens de texto
+    # Adicionar o handler para mensagens de texto
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, verificar_placa))
 
-    # Inicia o bot
     application.run_polling()
 
 
