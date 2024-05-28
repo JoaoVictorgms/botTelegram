@@ -1,4 +1,3 @@
-import asyncio
 import pandas as pd
 import threading
 from telegram import Update
@@ -6,6 +5,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import os
 from dotenv import load_dotenv
 import logging
+import asyncio
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -85,5 +85,9 @@ if __name__ == '__main__':
     except Exception as e:
         logger.error(f"Erro ao carregar o arquivo Excel: {e}")
 
-    loop = asyncio.get_event_loop()
+    # Criar um novo loop de eventos asyncio
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    # Executar o bot no loop de eventos
     loop.run_until_complete(start_bot())
