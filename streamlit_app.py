@@ -15,7 +15,8 @@ async def start_bot_async():
 
 # Configurar o loop de eventos assíncrono na thread principal
 def main():
-    asyncio.run(start_bot_async())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_bot_async())
 
 if __name__ == "__main__":
     main()
