@@ -2,8 +2,8 @@ import pandas as pd
 import threading
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 # Carregar as variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -11,13 +11,11 @@ load_dotenv()
 # Obter o token do bot do ambiente
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-
 # Função para ler apenas a coluna R do arquivo Excel e imprimir o número de linhas
 def print_excel_info(file_path):
     df = pd.read_excel(file_path, usecols='R')
     num_rows = df.shape[0]
     print(f'O arquivo Excel possui {num_rows} linhas.')
-
 
 # Chamar a função para imprimir a informação do arquivo Excel
 print_excel_info('jardiel_base.xlsx')
@@ -29,7 +27,6 @@ placas = placas_df.iloc[:, 0].dropna().tolist()
 # Carregar toda a planilha para obter todas as informações
 df_all_info = pd.read_excel('jardiel_base.xlsx')
 
-
 # Função para verificar se uma placa está na lista e retornar informações
 def check_placa_info(placa, resultados):
     for index, row in df_all_info.iterrows():
@@ -38,11 +35,9 @@ def check_placa_info(placa, resultados):
             return
     resultados.append(None)
 
-
 # Handler para o comando /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text('Envie uma placa de carro para verificar se ela está na planilha.')
-
 
 # Handler para verificar a placa
 async def verificar_placa(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -77,20 +72,9 @@ async def verificar_placa(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     else:
         await update.message.reply_text(f'A placa {placa} não está na planilha.')
 
-
-def main() -> None:
-    # Criar a aplicação do bot com o token obtido do .env
+# Função para iniciar o bot
+def start_bot():
     application = Application.builder().token(BOT_TOKEN).build()
-
-    # Adicionar o handler para o comando /start
     application.add_handler(CommandHandler("start", start))
-
-    # Adicionar o handler para mensagens de texto
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, verificar_placa))
-
-    # Iniciar o bot
     application.run_polling()
-
-
-if __name__ == '__main__':
-    main()
