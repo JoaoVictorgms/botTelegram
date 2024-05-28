@@ -4,12 +4,18 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import os
 from dotenv import load_dotenv
+import logging
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Carregar as variáveis de ambiente do arquivo .env
 load_dotenv()
 
 # Obter o token do bot do ambiente
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+logger.info(f"BOT_TOKEN: {BOT_TOKEN}")
 
 # Função para ler apenas a coluna R do arquivo Excel e imprimir o número de linhas
 def print_excel_info(file_path):
@@ -37,11 +43,13 @@ def check_placa_info(placa, resultados):
 
 # Handler para o comando /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    logger.info("Recebido comando /start")
     await update.message.reply_text('Envie uma placa de carro para verificar se ela está na planilha.')
 
 # Handler para verificar a placa
 async def verificar_placa(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     placa = update.message.text.strip().upper()
+    logger.info(f"Placa recebida: {placa}")
 
     if not placa:
         await update.message.reply_text('Por favor, envie uma placa válida.')
@@ -78,3 +86,6 @@ def start_bot():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, verificar_placa))
     application.run_polling()
+
+if __name__ == '__main__':
+    start_bot()

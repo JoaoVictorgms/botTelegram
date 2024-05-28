@@ -1,5 +1,5 @@
 pandas
 python-dotenv
-python-telegram-bot
-openpyxl
+python-telegram-bot==21.2
 streamlit
+openpyxl
