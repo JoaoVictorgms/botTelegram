@@ -79,10 +79,11 @@ async def start_bot():
         logger.error(f"Erro ao iniciar o bot: {e}")
 
 if __name__ == '__main__':
-    # Carregar toda a planilha para obter todas as informações
     try:
+        # Carregar toda a planilha para obter todas as informações
         df_all_info = pd.read_excel('jardiel_base.xlsx')
     except Exception as e:
         logger.error(f"Erro ao carregar o arquivo Excel: {e}")
 
-    asyncio.run(start_bot())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_bot())
