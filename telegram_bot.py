@@ -74,7 +74,9 @@ async def verificar_placa(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
 # Função para iniciar o bot
 def start_bot():
+    load_dotenv()
+    BOT_TOKEN = os.getenv("BOT_TOKEN")
     application = Application.builder().token(BOT_TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, verificar_placa))
-    application.run_polling()
+    asyncio.run(application.run_polling())
